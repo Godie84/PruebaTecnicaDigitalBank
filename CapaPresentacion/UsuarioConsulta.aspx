@@ -1,109 +1,35 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="UsuarioConsulta.aspx.cs" Inherits="CapaPresentacion.UsuarioConsulta" %>
 
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Consulta de Usuarios</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
         }
-        .container {
+        .container-custom {
             max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
+            margin: 40px auto;
+            background-color: #fff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 20px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .btn-warning {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-        .message {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .gridview {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
         .gridview th {
             background-color: #007bff;
             color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
         }
-        .gridview td {
+        .gridview td, .gridview th {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .gridview tr:hover {
-            background-color: #f5f5f5;
-        }
-        .gridview tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .no-data {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-style: italic;
         }
     </style>
+
     <script type="text/javascript">
         function confirmarEliminacion() {
             return confirm('¿Está seguro de que desea eliminar este usuario?');
@@ -112,17 +38,19 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="container">
-            <h2>Listado de Usuarios</h2>
-            
-            <asp:Button ID="btnNuevo" runat="server" Text="Nuevo Usuario" CssClass="btn btn-primary" 
+        <!-- ScriptManager necesario para que funcionen los scripts en postbacks -->
+        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+
+        <div class="container-custom">
+            <h2 class="mb-4">Listado de Usuarios</h2>
+
+            <asp:Button ID="btnNuevo" runat="server" Text="Nuevo Usuario" CssClass="btn btn-primary mb-3" 
                 OnClick="btnNuevo_Click" />
-            
-            <asp:Label ID="lblMensaje" runat="server" CssClass="message" Visible="false"></asp:Label>
-            
-            <asp:GridView ID="gvUsuarios" runat="server" 
+
+            <!-- GridView con Bootstrap -->
+            <asp:GridView ID="gvUsuarios" runat="server"
                 AutoGenerateColumns="False"
-                CssClass="gridview"
+                CssClass="table table-striped table-bordered gridview"
                 OnRowCommand="gvUsuarios_RowCommand"
                 DataKeyNames="Id"
                 EmptyDataText="No hay usuarios registrados">

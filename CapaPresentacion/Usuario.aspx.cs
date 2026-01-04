@@ -1,10 +1,6 @@
 ﻿using CapaPresentacion.ServiceReferenceWCF;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace CapaPresentacion
 {
@@ -14,7 +10,6 @@ namespace CapaPresentacion
         {
             if (!IsPostBack)
             {
-                // Verificar si hay un ID en QueryString para edición
                 if (Request.QueryString["id"] != null)
                 {
                     int id = Convert.ToInt32(Request.QueryString["id"]);
@@ -30,22 +25,19 @@ namespace CapaPresentacion
             {
                 using (UsuarioServiceClient cliente = new UsuarioServiceClient())
                 {
-                    UsuarioDTO usuario = cliente.ConsultarPorId(id);
-
+                    var usuario = cliente.ConsultarPorId(id);
                     if (usuario != null)
                     {
                         txtNombre.Text = usuario.Nombre;
                         txtFechaNacimiento.Text = usuario.FechaNacimiento.ToString("yyyy-MM-dd");
                         ddlSexo.SelectedValue = usuario.Sexo;
-
-                        // Guardar el ID en ViewState para la actualización
                         ViewState["UsuarioId"] = id;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensaje($"Error al cargar usuario: {ex.Message}", false);
+                MostrarAlerta($"Error al cargar usuario: {ex.Message}", "error");
             }
         }
 
@@ -67,7 +59,6 @@ namespace CapaPresentacion
                         bool resultado;
                         string mensaje;
 
-                        // Verificar si es actualización o inserción
                         if (ViewState["UsuarioId"] != null)
                         {
                             usuario.Id = Convert.ToInt32(ViewState["UsuarioId"]);
@@ -81,17 +72,15 @@ namespace CapaPresentacion
                             mensaje = resultado ? "Usuario registrado correctamente" : "Error al registrar usuario";
                         }
 
-                        MostrarMensaje(mensaje, resultado);
+                        MostrarAlerta(mensaje, resultado ? "success" : "error");
 
                         if (resultado)
-                        {
                             LimpiarFormulario();
-                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensaje($"Error: {ex.Message}", false);
+                    MostrarAlerta($"Error: {ex.Message}", "error");
                 }
             }
         }
@@ -110,11 +99,10 @@ namespace CapaPresentacion
             btnGuardar.Text = "Guardar";
         }
 
-        private void MostrarMensaje(string mensaje, bool exito)
+        private void MostrarAlerta(string mensaje, string tipo)
         {
-            lblMensaje.Text = mensaje;
-            lblMensaje.CssClass = exito ? "message success" : "message error";
-            lblMensaje.Visible = true;
+            string script = $"Swal.fire({{ text: '{mensaje}', icon: '{tipo}', confirmButtonText: 'Aceptar' }});";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), script, true);
         }
     }
 }
