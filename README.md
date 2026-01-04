@@ -143,7 +143,8 @@ La capa de presentación tiene un Service Reference apuntando al WCF:
 
  Manejo de errores con mensajes amigables en la UI
 
- Estructura del proyecto
+ Estructura del proyecto:
+ 
     /CapaPresentacion
         Usuario.aspx
         UsuarioConsulta.aspx
