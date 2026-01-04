@@ -78,14 +78,125 @@
 
  Procedimientos almacenados para operaciones CRUD
 
- Procedimiento técnico
+ ```bash
+-- Crear la base de datos
+CREATE DATABASE PruebaTecnicaDB;
+GO
+
+USE PruebaTecnicaDB;
+GO
+
+-- Crear la tabla Usuario
+CREATE TABLE Usuario (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(100) NOT NULL,
+    FechaNacimiento DATE NOT NULL,
+    Sexo CHAR(1) NOT NULL CHECK (Sexo IN ('M', 'F'))
+);
+GO
+
+
+-- =============================================
+-- Procedimiento: INSERTAR Usuario
+-- =============================================
+CREATE PROCEDURE sp_Usuario_Insertar
+    @Nombre NVARCHAR(100),
+    @FechaNacimiento DATE,
+    @Sexo CHAR(1)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    INSERT INTO Usuario (Nombre, FechaNacimiento, Sexo)
+    VALUES (@Nombre, @FechaNacimiento, @Sexo);
+    
+    SELECT SCOPE_IDENTITY() AS Id;
+END
+GO
+
+-- =============================================
+-- Procedimiento: MODIFICAR Usuario
+-- =============================================
+CREATE PROCEDURE sp_Usuario_Modificar
+    @Id INT,
+    @Nombre NVARCHAR(100),
+    @FechaNacimiento DATE,
+    @Sexo CHAR(1)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    UPDATE Usuario
+    SET Nombre = @Nombre,
+        FechaNacimiento = @FechaNacimiento,
+        Sexo = @Sexo
+    WHERE Id = @Id;
+    
+    SELECT @@ROWCOUNT AS FilasAfectadas;
+END
+GO
+
+-- =============================================
+-- Procedimiento: CONSULTAR Todos los Usuarios
+-- =============================================
+CREATE PROCEDURE sp_Usuario_Consultar
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT Id, Nombre, FechaNacimiento, Sexo
+    FROM Usuario
+    ORDER BY Id DESC;
+END
+GO
+
+-- =============================================
+-- Procedimiento: CONSULTAR Usuario por ID
+-- =============================================
+CREATE PROCEDURE sp_Usuario_ConsultarPorId
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT Id, Nombre, FechaNacimiento, Sexo
+    FROM Usuario
+    WHERE Id = @Id;
+END
+GO
+
+-- =============================================
+-- Procedimiento: ELIMINAR Usuario
+-- =============================================
+CREATE PROCEDURE sp_Usuario_Eliminar
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DELETE FROM Usuario
+    WHERE Id = @Id;
+    
+    SELECT @@ROWCOUNT AS FilasAfectadas;
+END
+GO
+
+-- Insertar datos de prueba
+INSERT INTO Usuario (Nombre, FechaNacimiento, Sexo)
+VALUES 
+    ('Juan Pérez', '1990-05-15', 'M'),
+    ('María García', '1985-08-22', 'F'),
+    ('Carlos López', '1992-03-10', 'M');
+GO
+ ```
+
+ ## Procedimiento técnico
+ 
  1. Configuración del entorno
 
- Visual Studio 2019 o superior
-
- .NET Framework 4.7.2
-
- SQL Server (Express o completo)
+ - Visual Studio 2022 o superior
+ - .NET Framework 4.7.2
+ - SQL Server (Express o completo)
 
  Asegurarse de que la cadena de conexión en CapaDatos apunte a tu base de datos:
 
