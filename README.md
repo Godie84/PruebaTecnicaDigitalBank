@@ -105,15 +105,10 @@ La capa de presentación tiene un Service Reference apuntando al WCF:
  - Crear la base de datos y la tabla Usuarios con los procedimientos almacenados proporcionados.
 
  - Abrir la solución en Visual Studio.
-
  - Compilar la solución.
-
  - Ejecutar el proyecto Web Forms.
-
  - La página inicial es Usuario.aspx.
-
  - Desde aquí se pueden registrar o modificar usuarios.
-
  - Para consultar usuarios, acceder a UsuarioConsulta.aspx.
 
  3. Flujo de datos
@@ -133,18 +128,14 @@ La capa de presentación tiene un Service Reference apuntando al WCF:
 
  Características implementadas
 
- Arquitectura 3 capas (Presentación, Negocios, Datos)
-
- Registro, Consulta, Modificación y Eliminación de usuarios
-
- Validaciones de campos en la UI
-
- Uso de DTOs para transferencia de datos
-
- Manejo de errores con mensajes amigables en la UI
+ - Arquitectura 3 capas (Presentación, Negocios, Datos)
+ - Registro, Consulta, Modificación y Eliminación de usuarios
+ - Validaciones de campos en la UI
+ - Uso de DTOs para transferencia de datos
+ - Manejo de errores con mensajes amigables en la UI
 
  Estructura del proyecto:
- 
+
     /CapaPresentacion
         Usuario.aspx
         UsuarioConsulta.aspx
