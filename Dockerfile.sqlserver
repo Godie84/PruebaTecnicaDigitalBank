@@ -1,0 +1,24 @@
+# Usar la imagen oficial de SQL Server 2019
+FROM mcr.microsoft.com/mssql/server:2019-latest
+
+# Variables de entorno para SQL Server
+ENV ACCEPT_EULA=Y
+ENV SA_PASSWORD=YourStrong@Password123
+ENV MSSQL_PID=Express
+
+# Crear directorio para scripts
+USER root
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copiar scripts SQL
+COPY ./sql-scripts/ /usr/src/app/
+
+# Dar permisos
+RUN chmod +x /usr/src/app/*.sh
+
+# Exponer el puerto de SQL Server
+EXPOSE 1433
+
+# Script de inicialización
+CMD /bin/bash ./entrypoint.sh

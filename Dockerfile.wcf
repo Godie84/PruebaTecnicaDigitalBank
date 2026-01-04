@@ -1,0 +1,28 @@
+# Imagen base con .NET Framework y IIS
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-ltsc2019
+
+# Configurar directorio de trabajo
+WORKDIR /inetpub/wwwroot
+
+# Eliminar el sitio web predeterminado
+RUN powershell -NoProfile -Command \
+    Remove-Item -Recurse C:\inetpub\wwwroot\*
+
+# Copiar los archivos publicados del servicio WCF
+COPY ./ServicioWCF/publish/ .
+
+# Habilitar WCF
+RUN powershell -NoProfile -Command \
+    Install-WindowsFeature NET-WCF-HTTP-Activation45; \
+    Install-WindowsFeature NET-WCF-TCP-Activation45
+
+# Configurar IIS AppPool para .NET 4.0
+RUN powershell -NoProfile -Command \
+    Import-Module WebAdministration; \
+    Set-ItemProperty 'IIS:\AppPools\DefaultAppPool' -name 'managedRuntimeVersion' -value 'v4.0'
+
+# Exponer el puerto 80
+EXPOSE 80
+
+# Mantener el contenedor ejecutándose
+ENTRYPOINT ["powershell", "-NoProfile", "-Command", "Start-Service W3SVC; while($true) { Start-Sleep -Seconds 3600 }"]

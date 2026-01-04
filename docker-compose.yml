@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # SQL Server
+  sqlserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlserver
+    container_name: pruebatecnica-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Password123
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - pruebatecnica-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Password123 -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+
+  # Servicio WCF
+  serviciowcf:
+    build:
+      context: .
+      dockerfile: Dockerfile.wcf
+    container_name: pruebatecnica-wcf
+    ports:
+      - "8081:80"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - pruebatecnica-network
+    environment:
+      - ConnectionStrings__PruebaTecnicaDB=Data Source=sqlserver;Initial Catalog=PruebaTecnicaDB;User ID=sa;Password=YourStrong@Password123;
+
+  # Aplicación Web
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: pruebatecnica-webapp
+    ports:
+      - "8080:80"
+    depends_on:
+      - serviciowcf
+    networks:
+      - pruebatecnica-network
+    environment:
+      - WCF_SERVICE_URL=http://serviciowcf/UsuarioService.svc
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  pruebatecnica-network:
+    driver: bridge
